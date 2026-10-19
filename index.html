@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartShelf | Inventory Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <aside class="sidebar">
+    <a class="brand" href="#">
+      <span class="brand-icon">🛒</span>
+      <span>Smart<span class="brand-accent">Shelf</span>
+        <small>Smarter Inventory. Better Tomorrow.</small>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard"><span>⌂</span>Dashboard</button>
+      <button class="nav-item" data-view="inventory"><span>⬡</span>Inventory</button>
+      <button class="nav-item" data-view="add"><span>⊕</span>Add Product</button>
+      <button class="nav-item" data-view="reports"><span>▥</span>Reports</button>
+      <button class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="cart-illustration">🛍️</div>
+      <p>Small changes<br>make a big difference!</p>
+      <span class="wave">〰</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <label class="global-search">
+        <span>⌕</span>
+        <input id="globalSearch" type="search" placeholder="Search products, categories...">
+      </label>
+
+      <div class="top-actions">
+        <button class="icon-button" id="notificationBtn" aria-label="Show alerts">
+          ♧<i id="notificationCount">0</i>
+        </button>
+        <div class="user-avatar">●</div>
+        <span>Hi, User</span>
+        <span class="chevron">⌄</span>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <section class="content">
+
+        <section class="welcome">
+          <div>
+            <h1 id="greeting">Good Evening! ☀️</h1>
+            <p>Here's what's happening with your inventory today.</p>
+          </div>
+          <div class="welcome-meta">
+            <span>▦ <span id="todayDate"></span></span>
+            <span class="online-pill"><i></i> System Online</span>
+          </div>
+        </section>
+
+        <section class="stats">
+          <article class="stat-card blue">
+            <div class="stat-icon">⬡</div>
+            <div>
+              <p>Total Products</p>
+              <h2 id="totalProducts">0</h2>
+              <small>Products tracked</small>
+            </div>
+          </article>
+
+          <article class="stat-card green">
+            <div class="stat-icon">▦</div>
+            <div>
+              <p>Total Units</p>
+              <h2 id="totalUnits">0</h2>
+              <small>Units in inventory</small>
+            </div>
+          </article>
+
+          <article class="stat-card orange">
+            <div class="stat-icon">⚠</div>
+            <div>
+              <p>Low Stock</p>
+              <h2 id="lowStockCount">0</h2>
+              <small>Need attention</small>
+            </div>
+          </article>
+
+          <article class="stat-card red">
+            <div class="stat-icon">✕</div>
+            <div>
+              <p>Out of Stock</p>
+              <h2 id="outOfStockCount">0</h2>
+              <small>Unavailable items</small>
+            </div>
+          </article>
+        </section>
+
+        <section class="chart-grid" id="chartsSection">
+          <article class="panel chart-panel">
+            <div class="panel-title">
+              <h2>⬡ Stock Overview</h2>
+              <div class="legend">
+                <span><i class="dot blue-dot"></i> In Stock</span>
+                <span><i class="dot purple-dot"></i> Low Stock</span>
+              </div>
+            </div>
+            <div class="bar-chart" id="barChart"></div>
+          </article>
+
+          <article class="panel chart-panel">
+            <div class="panel-title">
+              <h2>⬢ Stock Status</h2>
+            </div>
+            <div class="donut-layout">
+              <div class="donut" id="donut">
+                <div class="donut-hole">
+                  <strong id="donutTotal">0</strong>
+                  <span>Products</span>
+                </div>
+              </div>
+              <div class="donut-legend">
+                <p><i class="dot green-dot"></i> In Stock <b id="healthyLegend">0</b></p>
+                <p><i class="dot orange-dot"></i> Low Stock <b id="lowLegend">0</b></p>
+                <p><i class="dot red-dot"></i> Out of Stock <b id="outLegend">0</b></p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="panel inventory-panel" id="inventorySection">
+          <div class="inventory-heading">
+            <div>
+              <h2>⬡ Inventory Items</h2>
+              <p>Manage your products and keep track of stock levels.</p>
+            </div>
+
+            <div class="inventory-tools">
+              <label class="table-search">
+                ⌕
+                <input id="searchInput" type="search" placeholder="Search products...">
+              </label>
+
+              <select id="categoryFilter" aria-label="Filter category">
+                <option value="all">All Categories</option>
+              </select>
+
+              <select id="statusFilter" aria-label="Filter stock status">
+                <option value="all">All Statuses</option>
+                <option value="healthy">In Stock</option>
+                <option value="low">Low Stock</option>
+                <option value="out">Out of Stock</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Min. Stock</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryBody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-footer">
+            <span id="showingText">Showing products</span>
+            <div class="pagination">
+              <button id="prevPage" aria-label="Previous page">‹</button>
+              <span id="pageNumbers"></span>
+              <button id="nextPage" aria-label="Next page">›</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel add-panel" id="addSection">
+          <div class="panel-title">
+            <div>
+              <h2>＋ Add a Product</h2>
+              <p>Add an item to your store inventory.</p>
+            </div>
+          </div>
+
+          <form id="productForm">
+            <div class="form-grid">
+              <label>Product name
+                <input id="productName" required maxlength="60" placeholder="e.g. Rice Bag">
+              </label>
+
+              <label>Category
+                <input id="productCategory" required maxlength="40" placeholder="e.g. Groceries">
+              </label>
+
+              <label>Current quantity
+                <input id="productQuantity" type="number" min="0" max="1000000" required value="10">
+              </label>
+
+              <label>Minimum stock level
+                <input id="productMinimum" type="number" min="0" max="1000000" required value="5">
+              </label>
+            </div>
+
+            <button class="primary-button" type="submit">＋ Add Product</button>
+            <p id="formMessage" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="panel settings-panel" id="settingsSection">
+          <h2>⚙ Settings</h2>
+          <p>SmartShelf stores demo inventory in this browser on this device.</p>
+          <label class="setting-row">
+            Low-stock alert threshold is set individually for each product.
+          </label>
+          <button id="exportBtn" class="secondary-button">Export inventory as CSV</button>
+          <button id="resetBtn" class="secondary-button danger-text">Reset Demo</button>
+        </section>
+
+        <footer>SmartShelf © 2026 · A student project for smarter retail.</footer>
+      </section>
+
+      <aside class="right-rail">
+        <section class="panel alerts-panel">
+          <div class="rail-heading">
+            <h2>🔔 Recent Alerts</h2>
+            <button id="viewAllAlerts">View All</button>
+          </div>
+
+          <div id="alertsList"></div>
+
+          <div class="tip-card">
+            <span>💡</span>
+            <div>
+              <strong>Want to restock faster?</strong>
+              <p>Set up low stock alerts and get notified before you run out!</p>
+              <button data-view="settings">Go to Settings →</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel quick-panel">
+          <div class="rail-heading">
+            <h2>ϟ Quick Actions</h2>
+          </div>
+          <div class="quick-grid">
+            <button class="quick-action mint" data-view="add"><span>⊕</span>Add Product</button>
+            <button class="quick-action lavender" data-view="reports"><span>▥</span>View Reports</button>
+            <button class="quick-action violet" data-view="inventory"><span>⬡</span>Manage Inventory</button>
+            <button class="quick-action pink" id="quickReset"><span>⟳</span>Reset Demo</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <dialog id="editDialog">
+    <form method="dialog" id="editForm">
+      <h2>Edit product</h2>
+      <input type="hidden" id="editId">
+
+      <label>Product name
+        <input id="editName" required>
+      </label>
+
+      <label>Category
+        <input id="editCategory" required>
+      </label>
+
+      <label>Quantity
+        <input id="editQuantity" type="number" min="0" required>
+      </label>
+
+      <label>Minimum stock
+        <input id="editMinimum" type="number" min="0" required>
+      </label>
+
+      <div class="dialog-actions">
+        <button class="secondary-button" value="cancel">Cancel</button>
+        <button class="primary-button" id="saveEdit" value="save">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
